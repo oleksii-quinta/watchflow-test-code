@@ -84,6 +84,7 @@ def create_payment_intent(
             "user_id": str(user.id),
             **(metadata or {}),
         },
+        idempotency_key=ref,  # safe to retry — same ref always produces the same intent
     )
     order.stripe_payment_intent_id = intent.id
     db.session.commit()
