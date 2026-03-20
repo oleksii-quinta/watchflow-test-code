@@ -18,7 +18,16 @@ def get_redis():
     if _redis_client is None:
         import redis
         url = current_app.config.get("REDIS_URL", "redis://localhost:6379/0")
-        _redis_client = redis.from_url(url, decode_responses=True)
+        db = current_app.config.get("REDIS_DB", 0)
+        pool = redis.ConnectionPool.from_url(
+            url,
+            db=db,
+            max_connections=current_app.config.get("REDIS_MAX_CONNECTIONS", 20),
+            socket_timeout=current_app.config.get("REDIS_SOCKET_TIMEOUT", 5),
+            socket_connect_timeout=2,
+            decode_responses=True,
+        )
+        _redis_client = redis.Redis(connection_pool=pool)
     return _redis_client
 
 
