@@ -29,6 +29,11 @@ python_version = "3.12"
 ignore_missing_imports = true
 strict = false
 
+[[tool.mypy.overrides]]
+# Flask-SQLAlchemy's db.Model is dynamic; stubs not available
+module = "app.models.*"
+ignore_errors = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"

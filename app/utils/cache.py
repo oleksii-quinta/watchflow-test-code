@@ -63,15 +63,15 @@ def cache_delete_pattern(pattern: str) -> int:
 
 def make_cache_key(*parts) -> str:
     raw = ":".join(str(p) for p in parts)
-    return "wf:" + hashlib.md5(raw.encode()).hexdigest()  # noqa: S324
+    return "wf:" + hashlib.md5(raw.encode()).hexdigest()  # noqa: S324  # nosec B324
 
 
-def cached(ttl: int = 300, key_fn: Callable = None):
+def cached(ttl: int = 300, key_fn: Optional[Callable] = None):
     """Decorator — cache the return value of a function in Redis."""
     def decorator(f):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
-            if key_fn:
+            if key_fn is not None:
                 cache_key = key_fn(*args, **kwargs)
             else:
                 cache_key = make_cache_key(f.__module__, f.__name__, *args, *kwargs.values())

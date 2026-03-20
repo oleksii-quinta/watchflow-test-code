@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import Optional
 
 from app import db
 
@@ -29,15 +30,15 @@ class AuditLog(db.Model):
     def record(
         cls,
         action: str,
-        user_id: int = None,
-        actor_ip: str = None,
-        resource_type: str = None,
-        resource_id: str = None,
-        old_value: dict = None,
-        new_value: dict = None,
+        user_id: Optional[int] = None,
+        actor_ip: Optional[str] = None,
+        resource_type: Optional[str] = None,
+        resource_id: Optional[str] = None,
+        old_value: Optional[dict] = None,
+        new_value: Optional[dict] = None,
         status: str = "success",
-        error_message: str = None,
-        metadata: dict = None,
+        error_message: Optional[str] = None,
+        metadata: Optional[dict] = None,
     ) -> "AuditLog":
         from app import db
 
