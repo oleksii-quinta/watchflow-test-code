@@ -30,6 +30,24 @@ class TestRegister:
         })
         assert resp.status_code == 400
 
+    def test_register_password_no_uppercase(self, client, db):
+        resp = client.post("/auth/register", json={
+            "email": "lower@example.com",
+            "username": "loweruser",
+            "password": "alllowercase1",
+        })
+        assert resp.status_code == 400
+        assert "uppercase" in resp.get_json()["error"].lower()
+
+    def test_register_password_no_digit(self, client, db):
+        resp = client.post("/auth/register", json={
+            "email": "nodigit@example.com",
+            "username": "nodigituser",
+            "password": "NoDigitsHere!",
+        })
+        assert resp.status_code == 400
+        assert "digit" in resp.get_json()["error"].lower()
+
     def test_register_missing_fields(self, client):
         resp = client.post("/auth/register", json={"email": "x@y.com"})
         assert resp.status_code == 400
