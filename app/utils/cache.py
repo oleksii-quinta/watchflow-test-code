@@ -115,6 +115,15 @@ def cache_ttl(key: str) -> Optional[int]:
         return None
 
 
+def cache_exists(key: str) -> bool:
+    """Return True if *key* exists in Redis (regardless of value)."""
+    try:
+        return bool(get_redis().exists(key))
+    except Exception as exc:
+        logger.warning("Cache EXISTS error for %s: %s", key, exc)
+        return False
+
+
 def cache_flush_all() -> bool:
     """Flush all keys in the current Redis DB. Use carefully in production."""
     try:
@@ -150,7 +159,7 @@ def cached(ttl: int = 300, key_fn: Optional[Callable] = None, prefix: str = "fn"
 
             hit = cache_get(cache_key)
             if hit is not None:
-                logger.debug("Cache HIT %s", cache_key)
+                logger.debug("Cache HIT %s (ttl=%s)", cache_key, cache_ttl(cache_key))
                 return hit
 
             result = f(*args, **kwargs)
