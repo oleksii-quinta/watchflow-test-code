@@ -70,6 +70,19 @@ def cache_delete_pattern(pattern: str) -> int:
         return 0
 
 
+def cache_increment(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]:
+    """Atomically increment a counter key. Applies TTL when the key is first created."""
+    try:
+        r = get_redis()
+        new_val = r.incrby(key, amount)
+        if new_val == amount:  # key was just created by this increment
+            r.expire(key, ttl)
+        return new_val
+    except Exception as exc:
+        logger.warning("Cache INCREMENT error for %s: %s", key, exc)
+        return None
+
+
 def cache_get_or_set(key: str, fn: Callable, ttl: int = 300) -> Any:
     """Return cached value or call fn(), store the result, and return it."""
     hit = cache_get(key)
