@@ -81,7 +81,7 @@ def eval_custom_filter(filter_expr: str, context: dict) -> bool:
     DANGER: uses eval() — admin-only feature but still risky.
     """
     try:
-        return bool(eval(filter_expr, {"__builtins__": {}}, context))  # noqa: S307
+        return bool(eval(filter_expr, {"__builtins__": {}}, context))  # noqa: S307  # nosec B307
     except Exception as exc:
         logger.error("eval_custom_filter failed: %s", exc)
         return False
