@@ -6,3 +6,11 @@ rules:
   - pull_request
   parameters:
     title_pattern: ".*CURL.*"
+- description: Match the file python name.
+  enabled: true
+  severity: high
+  event_types:
+  - pull_request
+  parameters:
+    pattern: "*.py"
+    condition_type: "files_match_pattern"
