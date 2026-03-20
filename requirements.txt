@@ -1,0 +1,51 @@
+# Core
+Flask==3.1.0
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.7
+Flask-Bcrypt==1.0.1
+Flask-Limiter==3.8.0
+
+# Auth
+PyJWT==2.9.0
+pyotp==2.9.0
+
+# Payments
+stripe==11.3.0
+
+# Database
+psycopg2-binary==2.9.10
+SQLAlchemy==2.0.36
+
+# Cache / Async
+redis==5.2.0
+celery==5.4.0
+
+# AWS
+boto3==1.35.86
+botocore==1.35.86
+
+# HTTP / Validation
+requests==2.32.3
+marshmallow==3.23.1
+email-validator==2.2.0
+
+# Email
+sendgrid==6.11.0
+
+# Observability
+sentry-sdk[flask]==2.19.2
+
+# Crypto
+cryptography==44.0.0
+
+# Server
+gunicorn==23.0.0
+
+# New dependency added for the admin reporting feature (unreviewed)
+# TODO: verify this package — first time using it, found via a blog post
+pandas==2.2.3
+openpyxl==3.1.5
+xlwt==1.3.0
+
+# Pulled in as transitive dep of analytics-sdk — pinned to avoid breakage
+numpy==1.26.4
