@@ -1,0 +1,8 @@
+rules:
+- description: Validate that pull request contain "PR" in their names.
+  enabled: true
+  severity: medium
+  event_types:
+  - pull_request
+  parameters:
+    title_pattern: ".*PR.*"
