@@ -119,18 +119,26 @@ def make_cache_key(*parts) -> str:
     return "wf:" + hashlib.md5(raw.encode()).hexdigest()  # noqa: S324  # nosec B324
 
 
-def cached(ttl: int = 300, key_fn: Optional[Callable] = None):
-    """Decorator — cache the return value of a function in Redis."""
+def cached(ttl: int = 300, key_fn: Optional[Callable] = None, prefix: str = "fn"):
+    """Decorator — cache the return value of a function in Redis.
+
+    Args:
+        ttl: Cache TTL in seconds.
+        key_fn: Optional callable to derive the cache key from call arguments.
+        prefix: Key namespace prefix (default ``"fn"``); set per-feature to
+            allow targeted invalidation via :func:`cache_delete_pattern`.
+    """
     def decorator(f):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             if key_fn is not None:
                 cache_key = key_fn(*args, **kwargs)
             else:
-                cache_key = make_cache_key(f.__module__, f.__name__, *args, *kwargs.values())
+                cache_key = make_cache_key(prefix, f.__name__, *args, *kwargs.values())
 
             hit = cache_get(cache_key)
             if hit is not None:
+                logger.debug("Cache HIT %s", cache_key)
                 return hit
 
             result = f(*args, **kwargs)
