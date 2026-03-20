@@ -1,4 +1,5 @@
 import logging
+import re
 from datetime import datetime, timezone
 
 from flask import Blueprint, g, jsonify, request
@@ -31,6 +32,12 @@ def register():
 
     if len(password) < 8:
         return jsonify({"error": "Password must be at least 8 characters"}), 400
+
+    if not re.search(r"[A-Z]", password):
+        return jsonify({"error": "Password must contain at least one uppercase letter"}), 400
+
+    if not re.search(r"\d", password):
+        return jsonify({"error": "Password must contain at least one digit"}), 400
 
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already registered"}), 409
