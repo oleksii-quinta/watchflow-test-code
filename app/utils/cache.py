@@ -70,6 +70,16 @@ def cache_delete_pattern(pattern: str) -> int:
         return 0
 
 
+def cache_ttl(key: str) -> Optional[int]:
+    """Return remaining TTL in seconds, or None if the key does not exist."""
+    try:
+        ttl = get_redis().ttl(key)
+        return ttl if ttl >= 0 else None
+    except Exception as exc:
+        logger.warning("Cache TTL error for %s: %s", key, exc)
+        return None
+
+
 def cache_flush_all() -> bool:
     """Flush all keys in the current Redis DB. Use carefully in production."""
     try:
