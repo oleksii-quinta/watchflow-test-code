@@ -1,0 +1,12 @@
+# CODEOWNERS
+# Reviewers are automatically requested when a PR touches these paths.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Infrastructure — changes require infra team review
+infra/                    @oleksii-quinta-1
+.github/workflows/        @oleksii-quinta-1
+migrations/               @oleksii-quinta-1
+
+# Critical business logic — auth and payments require app owner review
+app/auth/                 @oleksii-quinta-2
+app/payments/             @oleksii-quinta-2
