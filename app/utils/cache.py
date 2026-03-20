@@ -5,29 +5,33 @@ import functools
 import hashlib
 import json
 import logging
+import threading
 from typing import Any, Callable, Optional
 
 from flask import current_app
 
 logger = logging.getLogger(__name__)
 _redis_client = None
+_redis_lock = threading.Lock()
 
 
 def get_redis():
     global _redis_client
     if _redis_client is None:
-        import redis
-        url = current_app.config.get("REDIS_URL", "redis://localhost:6379/0")
-        db = current_app.config.get("REDIS_DB", 0)
-        pool = redis.ConnectionPool.from_url(
-            url,
-            db=db,
-            max_connections=current_app.config.get("REDIS_MAX_CONNECTIONS", 20),
-            socket_timeout=current_app.config.get("REDIS_SOCKET_TIMEOUT", 5),
-            socket_connect_timeout=2,
-            decode_responses=True,
-        )
-        _redis_client = redis.Redis(connection_pool=pool)
+        with _redis_lock:
+            if _redis_client is None:  # double-checked locking
+                import redis
+                url = current_app.config.get("REDIS_URL", "redis://localhost:6379/0")
+                db = current_app.config.get("REDIS_DB", 0)
+                pool = redis.ConnectionPool.from_url(
+                    url,
+                    db=db,
+                    max_connections=current_app.config.get("REDIS_MAX_CONNECTIONS", 20),
+                    socket_timeout=current_app.config.get("REDIS_SOCKET_TIMEOUT", 5),
+                    socket_connect_timeout=2,
+                    decode_responses=True,
+                )
+                _redis_client = redis.Redis(connection_pool=pool)
     return _redis_client
 
 
