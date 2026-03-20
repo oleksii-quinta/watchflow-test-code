@@ -70,6 +70,16 @@ def cache_delete_pattern(pattern: str) -> int:
         return 0
 
 
+def cache_get_or_set(key: str, fn: Callable, ttl: int = 300) -> Any:
+    """Return cached value or call fn(), store the result, and return it."""
+    hit = cache_get(key)
+    if hit is not None:
+        return hit
+    value = fn()
+    cache_set(key, value, ttl=ttl)
+    return value
+
+
 def cache_ttl(key: str) -> Optional[int]:
     """Return remaining TTL in seconds, or None if the key does not exist."""
     try:
