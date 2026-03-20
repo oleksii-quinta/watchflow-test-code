@@ -29,4 +29,10 @@ def create_app(config_name="development"):
     app.register_blueprint(api_v2_bp, url_prefix="/api/v2")
     app.register_blueprint(webhooks_bp, url_prefix="/webhooks")
 
+    from flask import jsonify
+
+    @app.route("/health")
+    def health():
+        return jsonify({"status": "ok"})
+
     return app
