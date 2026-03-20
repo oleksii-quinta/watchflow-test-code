@@ -5,6 +5,7 @@ All monetary values are in cents unless stated otherwise.
 import logging
 import secrets
 import string
+from typing import Any, Optional
 
 import stripe
 from flask import current_app
@@ -53,8 +54,8 @@ def create_payment_intent(
     user: User,
     amount_cents: int,
     currency: str = "USD",
-    product_id: int = None,
-    metadata: dict = None,
+    product_id: Optional[int] = None,
+    metadata: Optional[dict] = None,
 ) -> dict:
     """Create a Stripe PaymentIntent and a pending Order."""
     s = _stripe_client()
@@ -104,13 +105,13 @@ def create_subscription(
     user: User,
     price_id: str,
     trial_days: int = 0,
-    coupon: str = None,
+    coupon: Optional[str] = None,
 ) -> dict:
     """Create a Stripe subscription for the user."""
     s = _stripe_client()
     customer_id = ensure_stripe_customer(user)
 
-    params = {
+    params: dict[str, Any] = {
         "customer": customer_id,
         "items": [{"price": price_id}],
         "metadata": {"user_id": str(user.id)},
@@ -154,7 +155,7 @@ def cancel_subscription(subscription: Subscription, immediately: bool = False) -
 
 
 def issue_refund(
-    order: Order, amount_cents: int = None, reason: str = "requested_by_customer"
+    order: Order, amount_cents: Optional[int] = None, reason: str = "requested_by_customer"
 ) -> dict:
     """Issue a full or partial refund."""
     s = _stripe_client()

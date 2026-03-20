@@ -14,7 +14,7 @@ from app.models.user import User
 logger = logging.getLogger(__name__)
 
 
-def generate_token(user_id: int, role: str, expiry_hours: int = None) -> str:
+def generate_token(user_id: int, role: str, expiry_hours: Optional[int] = None) -> str:
     """Generate a signed JWT for the given user."""
     secret = current_app.config["SECRET_KEY"]
     hours = expiry_hours or current_app.config.get("JWT_EXPIRATION_HOURS", 24)
