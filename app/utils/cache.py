@@ -75,7 +75,10 @@ def cache_delete_pattern(pattern: str) -> int:
 
 
 def cache_increment(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]:
-    """Atomically increment a counter key. Applies TTL when the key is first created."""
+    """Atomically increment a counter key. Applies TTL when the key is first created.
+
+    Pass a negative *amount* to decrement, or use the :func:`cache_decrement` alias.
+    """
     try:
         r = get_redis()
         new_val = r.incrby(key, amount)
@@ -85,6 +88,11 @@ def cache_increment(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]
     except Exception as exc:
         logger.warning("Cache INCREMENT error for %s: %s", key, exc)
         return None
+
+
+def cache_decrement(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]:
+    """Atomically decrement a counter key. Thin alias over :func:`cache_increment`."""
+    return cache_increment(key, amount=-amount, ttl=ttl)
 
 
 def cache_get_or_set(key: str, fn: Callable, ttl: int = 300) -> Any:
