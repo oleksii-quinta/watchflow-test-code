@@ -5,7 +5,6 @@ All monetary values are in cents unless stated otherwise.
 import logging
 import secrets
 import string
-from typing import Optional
 
 import stripe
 from flask import current_app
@@ -154,7 +153,9 @@ def cancel_subscription(subscription: Subscription, immediately: bool = False) -
     return subscription
 
 
-def issue_refund(order: Order, amount_cents: int = None, reason: str = "requested_by_customer") -> dict:
+def issue_refund(
+    order: Order, amount_cents: int = None, reason: str = "requested_by_customer"
+) -> dict:
     """Issue a full or partial refund."""
     s = _stripe_client()
 

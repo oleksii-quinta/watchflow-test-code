@@ -62,7 +62,8 @@ class User(db.Model):
         if not self.password_reset_token or not self.password_reset_expires:
             return False
         hashed = hashlib.sha256(token.encode()).hexdigest()
-        not_expired = datetime.now(timezone.utc) < self.password_reset_expires.replace(tzinfo=timezone.utc)
+        expires = self.password_reset_expires.replace(tzinfo=timezone.utc)
+        not_expired = datetime.now(timezone.utc) < expires
         return hashed == self.password_reset_token and not_expired
 
     def is_locked(self) -> bool:

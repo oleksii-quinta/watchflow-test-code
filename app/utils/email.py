@@ -26,7 +26,7 @@ def send_email(
 
     try:
         from sendgrid import SendGridAPIClient
-        from sendgrid.helpers.mail import Mail, Content, To
+        from sendgrid.helpers.mail import Content, Mail
 
         mail = Mail(
             from_email=from_email,
@@ -75,7 +75,9 @@ def send_password_reset_email(email: str, token: str) -> bool:
     return send_email(email, "Reset your Watchflow password", html)
 
 
-def send_payment_receipt(email: str, order_ref: str, amount_dollars: float, product_name: str) -> bool:
+def send_payment_receipt(
+    email: str, order_ref: str, amount_dollars: float, product_name: str
+) -> bool:
     html = f"""
     <p>Thank you for your purchase!</p>
     <p><strong>Order:</strong> {order_ref}<br>

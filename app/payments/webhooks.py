@@ -155,8 +155,12 @@ def _handle_subscription_created(stripe_sub: dict) -> None:
         user_id=user_id,
         stripe_subscription_id=stripe_sub["id"],
         status=stripe_sub["status"],
-        current_period_start=datetime.fromtimestamp(stripe_sub["current_period_start"], tz=timezone.utc),
-        current_period_end=datetime.fromtimestamp(stripe_sub["current_period_end"], tz=timezone.utc),
+        current_period_start=datetime.fromtimestamp(
+            stripe_sub["current_period_start"], tz=timezone.utc
+        ),
+        current_period_end=datetime.fromtimestamp(
+            stripe_sub["current_period_end"], tz=timezone.utc
+        ),
         trial_end=(
             datetime.fromtimestamp(stripe_sub["trial_end"], tz=timezone.utc)
             if stripe_sub.get("trial_end")

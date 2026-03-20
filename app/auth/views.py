@@ -6,8 +6,8 @@ from flask import Blueprint, g, jsonify, request
 
 from app import db
 from app.auth.utils import (
-    generate_token,
     generate_refresh_token,
+    generate_token,
     login_required,
     verify_totp,
 )
@@ -47,7 +47,7 @@ def register():
 
     user = User(email=email, username=username)
     user.set_password(password)
-    token = user.generate_verification_token()
+    _token = user.generate_verification_token()
 
     db.session.add(user)
     db.session.commit()
@@ -63,7 +63,7 @@ def register():
 
     # TODO: send verification email with token
     logger.info("User registered: %s", email)
-    return jsonify({"message": "Registration successful. Check your email.", "user": user.to_dict()}), 201
+    return jsonify({"message": "Registration successful. Check your email.", "user": user.to_dict()}), 201  # noqa: E501
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -151,7 +151,7 @@ def request_password_reset():
 
     user = User.query.filter_by(email=email, deleted_at=None).first()
     if user:
-        raw_token = user.generate_password_reset_token()
+        _raw_token = user.generate_password_reset_token()
         db.session.commit()
         # TODO: email raw_token to user
         logger.info("Password reset requested for %s", email)

@@ -21,6 +21,9 @@ ignore = [
     "B008",   # function calls in default args (Flask patterns)
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"app/utils/reports.py" = ["S608"]  # intentional raw SQL risk signals
+
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true

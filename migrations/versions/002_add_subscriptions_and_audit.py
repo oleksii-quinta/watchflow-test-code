@@ -4,8 +4,8 @@ Revision ID: 002_subscriptions
 Revises: 001_initial
 Create Date: 2024-10-15 09:30:00.000000
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "002_subscriptions"
 down_revision = "001_initial"
@@ -39,7 +39,9 @@ def upgrade():
         sa.UniqueConstraint("stripe_subscription_id"),
     )
     op.create_index("ix_subscriptions_user_id", "subscriptions", ["user_id"])
-    op.create_index("ix_subscriptions_stripe_subscription_id", "subscriptions", ["stripe_subscription_id"])
+    op.create_index(
+        "ix_subscriptions_stripe_subscription_id", "subscriptions", ["stripe_subscription_id"]
+    )
 
     op.create_table(
         "audit_logs",

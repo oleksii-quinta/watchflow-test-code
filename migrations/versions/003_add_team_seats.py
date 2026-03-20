@@ -8,8 +8,8 @@ BREAKING: renames `subscriptions.seats` → `subscriptions.seat_count`
 and drops the old `max_seats` column from `products`.
 Any code referencing `subscription.seats` or `product.max_seats` must be updated.
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "003_team_seats"
 down_revision = "002_subscriptions"
@@ -46,7 +46,10 @@ def upgrade():
     op.create_index("ix_team_members_user_id", "team_members", ["user_id"])
 
     # Add seat_used counter to subscriptions
-    op.add_column("subscriptions", sa.Column("seats_used", sa.Integer(), nullable=False, server_default="1"))
+    op.add_column(
+        "subscriptions",
+        sa.Column("seats_used", sa.Integer(), nullable=False, server_default="1"),
+    )
 
 
 def downgrade():

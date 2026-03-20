@@ -1,7 +1,9 @@
 import pytest
-from app import create_app, db as _db
-from app.models.user import User
+
+from app import create_app
+from app import db as _db
 from app.models.product import Product
+from app.models.user import User
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +29,9 @@ def client(app):
 
 @pytest.fixture
 def admin_user(db):
-    user = User(email="admin@test.com", username="admin", role="admin", is_active=True, is_verified=True)
+    user = User(
+        email="admin@test.com", username="admin", role="admin", is_active=True, is_verified=True
+    )
     user.set_password("AdminPass123!")
     db.session.add(user)
     db.session.commit()
@@ -38,7 +42,9 @@ def admin_user(db):
 
 @pytest.fixture
 def regular_user(db):
-    user = User(email="user@test.com", username="testuser", role="user", is_active=True, is_verified=True)
+    user = User(
+        email="user@test.com", username="testuser", role="user", is_active=True, is_verified=True
+    )
     user.set_password("UserPass123!")
     db.session.add(user)
     db.session.commit()

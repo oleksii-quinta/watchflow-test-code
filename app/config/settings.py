@@ -42,7 +42,7 @@ class TestingConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     WTF_CSRF_ENABLED = False
-    SECRET_KEY = "test-secret"
+    SECRET_KEY = "test-secret"  # noqa: S105
     BCRYPT_LOG_ROUNDS = 4
 
 

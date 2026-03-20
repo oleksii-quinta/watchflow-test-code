@@ -3,8 +3,8 @@ Secrets management — loads from AWS Secrets Manager in production,
 falls back to environment variables in development.
 """
 import json
-import os
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +22,10 @@ _FALLBACK_SECRETS = {
 def _load_from_aws(secret_name: str) -> dict:
     try:
         import boto3
-        from botocore.exceptions import ClientError
 
-        client = boto3.client("secretsmanager", region_name=os.environ.get("AWS_REGION", "us-east-1"))
+        client = boto3.client(
+            "secretsmanager", region_name=os.environ.get("AWS_REGION", "us-east-1")
+        )
         response = client.get_secret_value(SecretId=secret_name)
         return json.loads(response["SecretString"])
     except Exception as exc:
@@ -32,7 +33,7 @@ def _load_from_aws(secret_name: str) -> dict:
         return {}
 
 
-def get_secret(key: str, secret_name: str = "watchflow/production") -> str:
+def get_secret(key: str, secret_name: str = "watchflow/production") -> str:  # noqa: S107
     """Return secret value; AWS in prod, env-var or fallback in dev."""
     env_val = os.environ.get(key.upper())
     if env_val:

@@ -63,7 +63,7 @@ def cache_delete_pattern(pattern: str) -> int:
 
 def make_cache_key(*parts) -> str:
     raw = ":".join(str(p) for p in parts)
-    return "wf:" + hashlib.md5(raw.encode()).hexdigest()
+    return "wf:" + hashlib.md5(raw.encode()).hexdigest()  # noqa: S324
 
 
 def cached(ttl: int = 300, key_fn: Callable = None):

@@ -1,5 +1,4 @@
 """Tests for auth endpoints."""
-import pytest
 from tests.conftest import get_auth_token
 
 
