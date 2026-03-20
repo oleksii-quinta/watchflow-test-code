@@ -5,29 +5,33 @@ import functools
 import hashlib
 import json
 import logging
+import threading
 from typing import Any, Callable, Optional
 
 from flask import current_app
 
 logger = logging.getLogger(__name__)
 _redis_client = None
+_redis_lock = threading.Lock()
 
 
 def get_redis():
     global _redis_client
     if _redis_client is None:
-        import redis
-        url = current_app.config.get("REDIS_URL", "redis://localhost:6379/0")
-        db = current_app.config.get("REDIS_DB", 0)
-        pool = redis.ConnectionPool.from_url(
-            url,
-            db=db,
-            max_connections=current_app.config.get("REDIS_MAX_CONNECTIONS", 20),
-            socket_timeout=current_app.config.get("REDIS_SOCKET_TIMEOUT", 5),
-            socket_connect_timeout=2,
-            decode_responses=True,
-        )
-        _redis_client = redis.Redis(connection_pool=pool)
+        with _redis_lock:
+            if _redis_client is None:  # double-checked locking
+                import redis
+                url = current_app.config.get("REDIS_URL", "redis://localhost:6379/0")
+                db = current_app.config.get("REDIS_DB", 0)
+                pool = redis.ConnectionPool.from_url(
+                    url,
+                    db=db,
+                    max_connections=current_app.config.get("REDIS_MAX_CONNECTIONS", 20),
+                    socket_timeout=current_app.config.get("REDIS_SOCKET_TIMEOUT", 5),
+                    socket_connect_timeout=2,
+                    decode_responses=True,
+                )
+                _redis_client = redis.Redis(connection_pool=pool)
     return _redis_client
 
 
@@ -71,7 +75,10 @@ def cache_delete_pattern(pattern: str) -> int:
 
 
 def cache_increment(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]:
-    """Atomically increment a counter key. Applies TTL when the key is first created."""
+    """Atomically increment a counter key. Applies TTL when the key is first created.
+
+    Pass a negative *amount* to decrement, or use the :func:`cache_decrement` alias.
+    """
     try:
         r = get_redis()
         new_val = r.incrby(key, amount)
@@ -81,6 +88,11 @@ def cache_increment(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]
     except Exception as exc:
         logger.warning("Cache INCREMENT error for %s: %s", key, exc)
         return None
+
+
+def cache_decrement(key: str, amount: int = 1, ttl: int = 3600) -> Optional[int]:
+    """Atomically decrement a counter key. Thin alias over :func:`cache_increment`."""
+    return cache_increment(key, amount=-amount, ttl=ttl)
 
 
 def cache_get_or_set(key: str, fn: Callable, ttl: int = 300) -> Any:
@@ -101,6 +113,15 @@ def cache_ttl(key: str) -> Optional[int]:
     except Exception as exc:
         logger.warning("Cache TTL error for %s: %s", key, exc)
         return None
+
+
+def cache_exists(key: str) -> bool:
+    """Return True if *key* exists in Redis (regardless of value)."""
+    try:
+        return bool(get_redis().exists(key))
+    except Exception as exc:
+        logger.warning("Cache EXISTS error for %s: %s", key, exc)
+        return False
 
 
 def cache_flush_all() -> bool:
@@ -138,7 +159,7 @@ def cached(ttl: int = 300, key_fn: Optional[Callable] = None, prefix: str = "fn"
 
             hit = cache_get(cache_key)
             if hit is not None:
-                logger.debug("Cache HIT %s", cache_key)
+                logger.debug("Cache HIT %s (ttl=%s)", cache_key, cache_ttl(cache_key))
                 return hit
 
             result = f(*args, **kwargs)
