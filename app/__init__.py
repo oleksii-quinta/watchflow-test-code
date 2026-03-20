@@ -1,8 +1,9 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
 from app.config.settings import get_config
 
 db = SQLAlchemy()
@@ -19,9 +20,9 @@ def create_app(config_name="development"):
     migrate.init_app(app, db)
     limiter.init_app(app)
 
-    from app.auth.views import auth_bp
     from app.api.v1 import api_v1_bp
     from app.api.v2 import api_v2_bp
+    from app.auth.views import auth_bp
     from app.payments.webhooks import webhooks_bp
 
     app.register_blueprint(auth_bp, url_prefix="/auth")

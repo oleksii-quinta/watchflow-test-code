@@ -1,7 +1,7 @@
 from flask import g, jsonify, request
 
 from app.api.v1 import api_v1_bp
-from app.auth.utils import admin_required, login_required
+from app.auth.utils import login_required
 from app.models.subscription import Subscription
 from app.payments.processor import cancel_subscription, create_subscription
 

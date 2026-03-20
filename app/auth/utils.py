@@ -3,7 +3,6 @@ Auth utilities: JWT generation/validation, MFA, permission checks.
 """
 import functools
 import logging
-import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 

@@ -5,7 +5,7 @@ API v2 Subscriptions — BREAKING CHANGES from v1:
 - `current_period_end` is now a Unix timestamp
 - Nested `plan` object replaces flat product fields
 """
-from flask import g, jsonify, request
+from flask import g, jsonify
 
 from app.api.v2 import api_v2_bp
 from app.auth.utils import login_required
