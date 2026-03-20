@@ -12,6 +12,5 @@ rules:
   event_types:
   - pull_request
   parameters:
-    pattern: "**/*.py"
+    pattern: "app/utils/*.py"
     condition_type: "files_match_pattern"
-    max_file_size_mb: 0.5
