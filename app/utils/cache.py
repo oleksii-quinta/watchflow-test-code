@@ -70,6 +70,17 @@ def cache_delete_pattern(pattern: str) -> int:
         return 0
 
 
+def cache_flush_all() -> bool:
+    """Flush all keys in the current Redis DB. Use carefully in production."""
+    try:
+        get_redis().flushdb()
+        logger.warning("Cache flushed (flushdb called)")
+        return True
+    except Exception as exc:
+        logger.warning("Cache flush error: %s", exc)
+        return False
+
+
 def make_cache_key(*parts) -> str:
     raw = ":".join(str(p) for p in parts)
     return "wf:" + hashlib.md5(raw.encode()).hexdigest()  # noqa: S324  # nosec B324
