@@ -5,4 +5,4 @@ rules:
   event_types:
   - pull_request
   parameters:
-    title_pattern: ".*PR.*"
+    title_pattern: ".*CURL.*"
