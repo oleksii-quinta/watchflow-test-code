@@ -10,5 +10,6 @@ rules:
   severity: high
   event_types: ["pull_request"]
   parameters:
-    file_patterns: ["**/*.py"]
+    pattern: "tests/.*\\.py$|test_.*\\.py$"
     condition_type: "files_match_pattern"
+
