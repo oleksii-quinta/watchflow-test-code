@@ -5,10 +5,10 @@ rules:
   event_types: ["pull_request"]
   parameters:
     title_pattern: ".*CURL.*"
-- description: Match the file python name.
+- description: Error if any Python (.py) file is changed in the PR.
   enabled: true
   severity: high
   event_types: ["pull_request"]
   parameters:
-    pattern: ".*\\.py$"
+    file_patterns: ["**/*.py"]
     condition_type: "files_match_pattern"
