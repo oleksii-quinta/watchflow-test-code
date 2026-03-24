@@ -6,6 +6,7 @@
 infra/                    @oleksii-quinta-1
 .github/workflows/        @oleksii-quinta-1
 migrations/               @oleksii-quinta-1
+app/config                @oleksii-quinta-2
 
 # Critical business logic — auth and payments require app owner review
 app/auth/                 @oleksii-quinta-2
