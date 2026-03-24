@@ -8,7 +8,7 @@ on:
 
 jobs:
   refresh-expertise:
-    name: "Refresh expertise.yaml for all installed repos"
+    name: "Refresh expertise.yaml"
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
