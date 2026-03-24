@@ -1,9 +1,9 @@
 name: "Refresh Reviewer Expertise Profiles"
 
 on:
-  schedule:
-    # Runs every 15 minutes (UTC)
-    - cron: "*/15 * * * *"
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -14,16 +14,10 @@ jobs:
 
     steps:
       - name: "Trigger expertise refresh"
-        env:
-          PUBLIC_DOMAIN: ${{ vars.PUBLIC_DOMAIN }}
-          WEBHOOK_SECRET_GITHUB: ${{ secrets.WEBHOOK_SECRET_GITHUB }}
         run: |
-          echo "Triggering expertise refresh at https://${PUBLIC_DOMAIN}/api/v1/scheduler/refresh-expertise"
-
           HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
             --max-time 30 \
-            -X POST "https://${PUBLIC_DOMAIN}/api/v1/scheduler/refresh-expertise" \
-            -H "X-Watchflow-Scheduler-Token: ${WEBHOOK_SECRET_GITHUB}" \
+            -X POST "https://nonperceivable-fidelia-tongued.ngrok-free.dev/api/v1/scheduler/refresh-expertise" \
             -H "Content-Type: application/json")
 
           echo "HTTP status: ${HTTP_STATUS}"
@@ -33,5 +27,3 @@ jobs:
             echo "::error::Expertise refresh failed with HTTP ${HTTP_STATUS}"
             exit 1
           fi
-
-          echo "Expertise refresh triggered successfully."
