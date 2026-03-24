@@ -5,11 +5,6 @@ on:
     # Runs every 15 minutes (UTC)
     - cron: "*/15 * * * *"
   workflow_dispatch:
-    inputs:
-      api_url:
-        description: "Override Watchflow API URL (leave blank to use WATCHFLOW_API_URL secret)"
-        required: false
-        type: string
 
 jobs:
   refresh-expertise:
@@ -20,24 +15,15 @@ jobs:
     steps:
       - name: "Trigger expertise refresh"
         env:
-          WATCHFLOW_API_URL: ${{ inputs.api_url || secrets.WATCHFLOW_API_URL }}
-          WATCHFLOW_SCHEDULER_TOKEN: ${{ secrets.WATCHFLOW_SCHEDULER_TOKEN }}
+          PUBLIC_DOMAIN: ${{ vars.PUBLIC_DOMAIN }}
+          WEBHOOK_SECRET_GITHUB: ${{ secrets.WEBHOOK_SECRET_GITHUB }}
         run: |
-          if [ -z "$WATCHFLOW_API_URL" ]; then
-            echo "::error::WATCHFLOW_API_URL secret is not set. Add it in Settings → Secrets → Actions."
-            exit 1
-          fi
-          if [ -z "$WATCHFLOW_SCHEDULER_TOKEN" ]; then
-            echo "::error::WATCHFLOW_SCHEDULER_TOKEN secret is not set. Add it in Settings → Secrets → Actions."
-            exit 1
-          fi
-
-          echo "Triggering expertise refresh at ${WATCHFLOW_API_URL}/api/v1/scheduler/refresh-expertise"
+          echo "Triggering expertise refresh at https://${PUBLIC_DOMAIN}/api/v1/scheduler/refresh-expertise"
 
           HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
             --max-time 30 \
-            -X POST "${WATCHFLOW_API_URL}/api/v1/scheduler/refresh-expertise" \
-            -H "X-Watchflow-Scheduler-Token: ${WATCHFLOW_SCHEDULER_TOKEN}" \
+            -X POST "https://${PUBLIC_DOMAIN}/api/v1/scheduler/refresh-expertise" \
+            -H "X-Watchflow-Scheduler-Token: ${WEBHOOK_SECRET_GITHUB}" \
             -H "Content-Type: application/json")
 
           echo "HTTP status: ${HTTP_STATUS}"
