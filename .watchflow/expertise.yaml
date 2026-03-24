@@ -1,10 +1,14 @@
 contributors:
   oleksii-quinta:
-    commit_count: 36
+    commit_count: 47
     file_paths:
     - app/__init__.py
     - app/api/__init__.py
     - app/api/v1/__init__.py
+    - app/config
+    - app/config/secrets.py
+    - app/utils
+    - app/utils/cache.py
     - infra/terraform/main.tf
     - infra/terraform/variables.tf
     - migrations/env.py
@@ -19,23 +23,28 @@ contributors:
     last_active: '2026-03-24'
     review_count: 0
   oleksii-quinta-1:
-    commit_count: 4
+    commit_count: 10
     file_paths:
     - .github/workflows/
+    - app/utils
+    - app/utils/cache.py
     - infra/
     - infra/terraform/variables.tf
     - migrations/
     high_risk_reviews: 0
     languages:
+    - python
     - terraform
     last_active: '2026-03-20'
     review_count: 0
   oleksii-quinta-2:
-    commit_count: 7
+    commit_count: 13
     file_paths:
     - app/__init__.py
     - app/auth/
     - app/payments/
+    - app/utils
+    - app/utils/cache.py
     high_risk_reviews: 0
     languages:
     - python
@@ -48,4 +57,4 @@ contributors:
     languages: []
     last_active: '2026-03-24'
     review_count: 0
-updated_at: '2026-03-24T20:05:13.808161+00:00'
+updated_at: '2026-03-24T20:17:20.416380+00:00'
