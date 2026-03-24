@@ -12,6 +12,7 @@ class TestRegister:
         assert resp.status_code == 201
         data = resp.get_json()
         assert data["user"]["email"] == "new@example.com"
+        # TODO: another test here to check that the user is created in the database
 
     def test_register_duplicate_email(self, client, regular_user):
         resp = client.post("/auth/register", json={
