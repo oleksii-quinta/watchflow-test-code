@@ -14,11 +14,14 @@ jobs:
 
     steps:
       - name: "Trigger expertise refresh"
+        env:
+          REPO: ${{ github.repository }}
         run: |
           HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
             --max-time 30 \
             -X POST "https://nonperceivable-fidelia-tongued.ngrok-free.dev/api/v1/scheduler/refresh-expertise" \
-            -H "Content-Type: application/json")
+            -H "Content-Type: application/json" \
+            -d "{\"repo\": \"${REPO}\"}")
 
           echo "HTTP status: ${HTTP_STATUS}"
           cat /tmp/response.json
