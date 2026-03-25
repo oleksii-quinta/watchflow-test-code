@@ -1,6 +1,6 @@
 contributors:
   oleksii-quinta:
-    commit_count: 107
+    commit_count: 138
     file_paths:
     - app/__init__.py
     - app/api/__init__.py
@@ -23,7 +23,7 @@ contributors:
     last_active: '2026-03-24'
     review_count: 0
   oleksii-quinta-1:
-    commit_count: 34
+    commit_count: 36
     file_paths:
     - .github/workflows/
     - app/utils
@@ -38,10 +38,11 @@ contributors:
     last_active: '2026-03-20'
     review_count: 0
   oleksii-quinta-2:
-    commit_count: 37
+    commit_count: 41
     file_paths:
     - app/__init__.py
     - app/auth/
+    - app/config
     - app/payments/
     - app/utils
     - app/utils/cache.py
@@ -51,10 +52,10 @@ contributors:
     last_active: '2026-03-20'
     review_count: 0
   watchflow-dev-oleksii[bot]:
-    commit_count: 1
+    commit_count: 12
     file_paths: []
     high_risk_reviews: 0
     languages: []
-    last_active: '2026-03-24'
+    last_active: '2026-03-25'
     review_count: 0
-updated_at: '2026-03-25T00:19:09.468734+00:00'
+updated_at: '2026-03-25T01:04:34.285018+00:00'
