@@ -33,7 +33,7 @@ jobs:
 
           HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
             --max-time 30 \
-            -X POST "https://${{ vars.PUBLIC_DOMAIN }}/api/v1/scheduler/refresh-expertise" \
+            -X POST "https://nonperceivable-fidelia-tongued.ngrok-free.dev/api/v1/scheduler/refresh-expertise" \
             -H "Authorization: Bearer $OIDC_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"repo": "${{ github.repository }}"}')
