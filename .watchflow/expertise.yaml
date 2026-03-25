@@ -1,0 +1,62 @@
+contributors:
+  oleksii-quinta:
+    commit_count: 27
+    languages:
+    - python
+    - terraform
+    last_active: '2026-03-25'
+    path_commit_counts:
+      app/__init__.py: 2
+      app/api/__init__.py: 1
+      app/api/v1/__init__.py: 2
+      infra/terraform/main.tf: 1
+      infra/terraform/variables.tf: 1
+      migrations/env.py: 2
+      migrations/versions/001_initial_schema.py: 2
+      tests/__init__.py: 1
+      tests/conftest.py: 2
+      wsgi.py: 2
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
+  oleksii-quinta-1:
+    commit_count: 1
+    languages:
+    - terraform
+    last_active: '2026-03-20'
+    path_commit_counts:
+      infra/terraform/variables.tf: 1
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
+  oleksii-quinta-2:
+    commit_count: 1
+    languages:
+    - python
+    last_active: '2026-03-20'
+    path_commit_counts:
+      app/__init__.py: 1
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
+  watchflow-dev-oleksii[bot]:
+    commit_count: 19
+    languages: []
+    last_active: '2026-03-25'
+    path_commit_counts: {}
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
+updated_at: '2026-03-25T12:47:42.775868+00:00'
