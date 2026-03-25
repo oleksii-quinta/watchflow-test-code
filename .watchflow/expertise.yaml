@@ -31,6 +31,12 @@ contributors:
       tests/conftest.py: 2
       wsgi.py: 2
     review_count: 0
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
   oleksii-quinta-1:
     commit_count: 38
     file_paths:
@@ -44,6 +50,12 @@ contributors:
     path_commit_counts:
       infra/terraform/variables.tf: 1
     review_count: 0
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
   oleksii-quinta-2:
     commit_count: 44
     file_paths:
@@ -56,6 +68,12 @@ contributors:
     path_commit_counts:
       app/__init__.py: 1
     review_count: 0
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
   watchflow-dev-oleksii[bot]:
     commit_count: 37
     file_paths: []
@@ -64,4 +82,10 @@ contributors:
     last_active: '2026-03-25'
     path_commit_counts: {}
     review_count: 0
-updated_at: '2026-03-25T12:24:58.336676+00:00'
+    reviews:
+      critical: 0
+      high: 0
+      low: 0
+      medium: 0
+      total: 0
+updated_at: '2026-03-25T12:37:29.963581+00:00'
