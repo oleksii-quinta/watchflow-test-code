@@ -6,6 +6,10 @@ on:
     # Every 2 hours (UTC). GitHub may delay scheduled runs during high load.
     - cron: "0 */2 * * *"
 
+permissions:
+  contents: read
+  id-token: write  # required to mint the OIDC token
+
 jobs:
   refresh-expertise:
     name: "Refresh expertise.yaml"
@@ -14,14 +18,25 @@ jobs:
 
     steps:
       - name: "Trigger expertise refresh"
-        env:
-          REPO: ${{ github.repository }}
         run: |
+          # Fetch a short-lived OIDC JWT scoped to this workflow run.
+          # audience must match what the Watchflow app expects ("watchflow").
+          OIDC_TOKEN=$(curl --silent --fail \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=watchflow" \
+            | jq -r .value)
+
+          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+            echo "::error::Failed to obtain OIDC token"
+            exit 1
+          fi
+
           HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
             --max-time 30 \
-            -X POST "https://nonperceivable-fidelia-tongued.ngrok-free.dev/api/v1/scheduler/refresh-expertise" \
+            -X POST "https://${{ vars.PUBLIC_DOMAIN }}/api/v1/scheduler/refresh-expertise" \
+            -H "Authorization: Bearer $OIDC_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"repo\": \"${REPO}\"}")
+            -d '{"repo": "${{ github.repository }}"}')
 
           echo "HTTP status: ${HTTP_STATUS}"
           cat /tmp/response.json
