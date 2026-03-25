@@ -5,9 +5,7 @@ contributors:
     - app/__init__.py
     - app/api/__init__.py
     - app/api/v1/__init__.py
-    - app/config
     - app/config/secrets.py
-    - app/utils
     - app/utils/cache.py
     - infra/terraform/main.tf
     - infra/terraform/variables.tf
@@ -21,35 +19,42 @@ contributors:
     - python
     - terraform
     last_active: '2026-03-25'
+    path_commit_counts:
+      app/__init__.py: 2
+      app/api/__init__.py: 1
+      app/api/v1/__init__.py: 2
+      infra/terraform/main.tf: 1
+      infra/terraform/variables.tf: 1
+      migrations/env.py: 2
+      migrations/versions/001_initial_schema.py: 2
+      tests/__init__.py: 1
+      tests/conftest.py: 2
+      wsgi.py: 2
     review_count: 0
   oleksii-quinta-1:
     commit_count: 38
     file_paths:
-    - .github/workflows/
-    - app/utils
     - app/utils/cache.py
-    - infra/
     - infra/terraform/variables.tf
-    - migrations/
     high_risk_reviews: 0
     languages:
     - python
     - terraform
     last_active: '2026-03-20'
+    path_commit_counts:
+      infra/terraform/variables.tf: 1
     review_count: 0
   oleksii-quinta-2:
     commit_count: 44
     file_paths:
     - app/__init__.py
-    - app/auth/
-    - app/config
-    - app/payments/
-    - app/utils
     - app/utils/cache.py
     high_risk_reviews: 0
     languages:
     - python
     last_active: '2026-03-20'
+    path_commit_counts:
+      app/__init__.py: 1
     review_count: 0
   watchflow-dev-oleksii[bot]:
     commit_count: 37
@@ -57,5 +62,6 @@ contributors:
     high_risk_reviews: 0
     languages: []
     last_active: '2026-03-25'
+    path_commit_counts: {}
     review_count: 0
-updated_at: '2026-03-25T10:36:39.654402+00:00'
+updated_at: '2026-03-25T12:24:58.336676+00:00'
