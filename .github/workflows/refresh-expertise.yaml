@@ -31,17 +31,42 @@ jobs:
             exit 1
           fi
 
-          HTTP_STATUS=$(curl --silent --output /tmp/response.json --write-out "%{http_code}" \
-            --max-time 30 \
-            -X POST "https://nonperceivable-fidelia-tongued.ngrok-free.dev/api/v1/scheduler/refresh-expertise" \
-            -H "Authorization: Bearer $OIDC_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"repo": "${{ github.repository }}"}')
+          MAX_ATTEMPTS=20
+          SLEEP_SECONDS=15
+          ATTEMPT=1
+          SUCCESS=0
+          RESPONSE_FILE=/tmp/response.json
 
-          echo "HTTP status: ${HTTP_STATUS}"
-          cat /tmp/response.json
+          while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
+            echo "Attempt ${ATTEMPT}/${MAX_ATTEMPTS}: calling expertise refresh endpoint..."
 
-          if [ "$HTTP_STATUS" -ne 200 ]; then
-            echo "::error::Expertise refresh failed with HTTP ${HTTP_STATUS}"
+            HTTP_STATUS=$(curl --silent --show-error --output "$RESPONSE_FILE" --write-out "%{http_code}" \
+              --connect-timeout 10 \
+              --max-time 30 \
+              -X POST "https://nonperceivable-fidelia-tongued.ngrok-free.dev/api/v1/scheduler/refresh-expertise" \
+              -H "Authorization: Bearer $OIDC_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{"repo": "${{ github.repository }}"}' || echo "000")
+
+            RESPONSE_SIZE=$(wc -c < "$RESPONSE_FILE" 2>/dev/null || echo "0")
+            echo "HTTP status: ${HTTP_STATUS}, response size: ${RESPONSE_SIZE} bytes"
+
+            if [ "$HTTP_STATUS" -eq 200 ] && [ "$RESPONSE_SIZE" -gt 0 ]; then
+              SUCCESS=1
+              break
+            fi
+
+            ATTEMPT=$((ATTEMPT + 1))
+            if [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; then
+              echo "Endpoint not ready yet; waiting ${SLEEP_SECONDS}s before retry..."
+              sleep "$SLEEP_SECONDS"
+            fi
+          done
+
+          if [ "$SUCCESS" -ne 1 ]; then
+            echo "::error::Expertise refresh failed after ${MAX_ATTEMPTS} attempts"
             exit 1
           fi
+
+          echo "Expertise refresh succeeded."
+          cat "$RESPONSE_FILE"
