@@ -103,14 +103,8 @@ rules:
     severity: high
     event_types: ["pull_request"]
     parameters:
-      security_patterns:
-        - "app/auth/"
-        - "app/config/secrets"
-        - "app/utils/crypto"
-        - "\\.env"
-        - "\\.github/workflows/"
       pattern: "app/auth/*"
-      condition_type: "files_match_pattern"
+      condition_type: "files_not_match_pattern"
 
   - description: "Security risk: secrets config changes require explicit review."
     enabled: true
@@ -135,7 +129,7 @@ rules:
     event_types: ["pull_request"]
     parameters:
       pattern: "app/api/v1/*"
-      condition_type: "files_match_pattern"
+      condition_type: "files_not_match_pattern"
 
   # Breaking marker in title (supported).
   - description: "Breaking change risk: PR title must not include BREAKING unless reviewed."
