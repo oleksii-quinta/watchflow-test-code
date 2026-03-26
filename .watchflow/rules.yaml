@@ -85,9 +85,9 @@ rules:
       condition_type: "files_not_match_pattern"
 
   # Security-sensitive diff content (supported).
-  - description: "Security risk: detect hardcoded secrets in diffs."
+  - description: "Security risk: change to security-sensitive content require explicit review."
     enabled: true
-    severity: critical
+    severity: medium
     event_types: ["pull_request"]
     parameters:
       security_patterns:
