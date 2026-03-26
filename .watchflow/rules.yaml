@@ -2,7 +2,7 @@ rules:
   # Size risk (supported): total LOC per PR.
   - description: "Size risk: PR must not exceed 500 changed lines."
     enabled: true
-    severity: high
+    severity: medium
     event_types: ["pull_request"]
     parameters:
       max_lines: 500
@@ -49,10 +49,20 @@ rules:
         # pyproject/poetry dependency blocks
         - "^\\[(tool\\.poetry\\.dependencies|tool\\.poetry\\.group\\.[^.]+\\.dependencies|project\\.dependencies)\\][[:space:]]*$"
 
-  # Critical path fallback (critical_path is not implemented on this branch).
+  # Critical path signal (triggers evaluate_critical_path via critical_owners).
+  - description: "Critical path risk: changes to paths owned by critical owners require review."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      critical_owners:
+        - "@oleksii-quinta-1"
+        - "@oleksii-quinta-2"
+
+  # Critical path fallback (files_match for rule-match signal, kept for breadth).
   - description: "Critical path risk: changes under app/config require risk review."
     enabled: true
-    severity: critical
+    severity: high
     event_types: ["pull_request"]
     parameters:
       pattern: "app/config/*"
@@ -60,7 +70,7 @@ rules:
 
   - description: "Critical path risk: changes under app/payments require risk review."
     enabled: true
-    severity: critical
+    severity: high
     event_types: ["pull_request"]
     parameters:
       pattern: "app/payments/*"
@@ -68,7 +78,7 @@ rules:
 
   - description: "Critical path risk: schema migrations require risk review."
     enabled: true
-    severity: critical
+    severity: high
     event_types: ["pull_request"]
     parameters:
       pattern: "migrations/*"
@@ -87,26 +97,24 @@ rules:
         - "token"
         - "private[_-]?key"
 
-  # Security-sensitive file areas (supported via file pattern fallback).
-  - description: "Security risk: auth module changes require explicit review."
+  # Security-sensitive file paths.
+  - description: "Security risk: changes to security-sensitive paths require explicit review."
     enabled: true
-    severity: critical
+    severity: high
     event_types: ["pull_request"]
     parameters:
+      security_patterns:
+        - "app/auth/"
+        - "app/config/secrets"
+        - "app/utils/crypto"
+        - "\\.env"
+        - "\\.github/workflows/"
       pattern: "app/auth/*"
-      condition_type: "files_not_match_pattern"
-
-  - description: "Security risk: crypto utility changes require explicit review."
-    enabled: true
-    severity: critical
-    event_types: ["pull_request"]
-    parameters:
-      pattern: "app/utils/crypto.py"
-      condition_type: "files_not_match_pattern"
+      condition_type: "files_match_pattern"
 
   - description: "Security risk: secrets config changes require explicit review."
     enabled: true
-    severity: critical
+    severity: medium
     event_types: ["pull_request"]
     parameters:
       pattern: "app/config/secrets.py"
@@ -123,16 +131,16 @@ rules:
   # Breaking-change path detection (supported fallback).
   - description: "Breaking change risk: API v1 changes require explicit review."
     enabled: true
-    severity: critical
+    severity: high
     event_types: ["pull_request"]
     parameters:
       pattern: "app/api/v1/*"
-      condition_type: "files_not_match_pattern"
+      condition_type: "files_match_pattern"
 
   # Breaking marker in title (supported).
   - description: "Breaking change risk: PR title must not include BREAKING unless reviewed."
     enabled: true
-    severity: critical
+    severity: high
     event_types: ["pull_request"]
     parameters:
       title_pattern: "^(?!.*BREAKING).*$"
