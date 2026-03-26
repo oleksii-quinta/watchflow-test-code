@@ -67,3 +67,22 @@ def delete_user(user_id: int):
     user.deleted_at = datetime.now(timezone.utc)
     db.session.commit()
     return jsonify({"message": "User deleted"}), 200
+
+
+@api_v1_bp.route("/users/bulk-delete", methods=["POST"])
+@admin_required
+def bulk_delete_users():
+    """Bulk soft-delete multiple users by ID list."""
+    from datetime import datetime, timezone
+    data = request.get_json(silent=True) or {}
+    user_ids = data.get("user_ids", [])
+    if not user_ids:
+        return jsonify({"error": "user_ids list is required"}), 400
+
+    now = datetime.now(timezone.utc)
+    updated = (
+        User.query.filter(User.id.in_(user_ids), User.deleted_at.is_(None))
+        .update({"deleted_at": now}, synchronize_session=False)
+    )
+    db.session.commit()
+    return jsonify({"deleted_count": updated}), 200
