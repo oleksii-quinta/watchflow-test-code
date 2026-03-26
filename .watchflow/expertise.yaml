@@ -1,6 +1,6 @@
 contributors:
   oleksii-quinta:
-    commit_count: 157
+    commit_count: 166
     languages:
     - python
     - terraform
@@ -8,12 +8,12 @@ contributors:
     path_commit_counts:
       app/__init__.py: 2
       app/api/__init__.py: 1
-      app/api/v1: 8
+      app/api/v1: 10
       app/api/v1/__init__.py: 2
       app/api/v1/orders.py: 1
       app/api/v1/products.py: 1
       app/api/v1/subscriptions.py: 2
-      app/api/v1/users.py: 8
+      app/api/v1/users.py: 9
       app/api/v2/__init__.py: 2
       app/api/v2/subscriptions.py: 2
       app/api/v2/users.py: 2
@@ -25,8 +25,8 @@ contributors:
       app/config/settings.py: 2
       app/models/__init__.py: 2
       app/models/audit_log.py: 3
-      app/payments: 12
-      app/payments/processor.py: 21
+      app/payments: 15
+      app/payments/processor.py: 24
       infra/terraform/main.tf: 1
       infra/terraform/variables.tf: 1
       migrations/env.py: 2
@@ -59,15 +59,15 @@ contributors:
       medium: 0
       total: 0
   oleksii-quinta-2:
-    commit_count: 30
+    commit_count: 32
     languages:
     - python
     last_active: '2026-03-20'
     path_commit_counts:
       app/__init__.py: 1
       app/auth/views.py: 1
-      app/payments: 4
-      app/payments/processor.py: 7
+      app/payments: 5
+      app/payments/processor.py: 8
       tests/test_auth.py: 1
     reviews:
       critical: 0
@@ -108,4 +108,4 @@ contributors:
       low: 0
       medium: 0
       total: 0
-updated_at: '2026-03-26T13:28:02.579713+00:00'
+updated_at: '2026-03-26T13:31:17.757023+00:00'
