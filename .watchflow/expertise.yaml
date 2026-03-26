@@ -8,7 +8,6 @@ contributors:
     path_commit_counts:
       app/__init__.py: 2
       app/api/__init__.py: 1
-      app/api/v1: 22
       app/api/v1/__init__.py: 2
       app/api/v1/orders.py: 1
       app/api/v1/products.py: 1
@@ -25,7 +24,6 @@ contributors:
       app/config/settings.py: 2
       app/models/__init__.py: 2
       app/models/audit_log.py: 3
-      app/payments: 33
       app/payments/processor.py: 42
       infra/terraform/main.tf: 1
       infra/terraform/variables.tf: 1
@@ -66,7 +64,6 @@ contributors:
     path_commit_counts:
       app/__init__.py: 1
       app/auth/views.py: 1
-      app/payments: 11
       app/payments/processor.py: 14
       tests/test_auth.py: 1
     reviews:
@@ -98,7 +95,7 @@ contributors:
       medium: 0
       total: 0
   watchflow-dev-oleksii[bot]:
-    commit_count: 20
+    commit_count: 22
     languages: []
     last_active: '2026-03-26'
     path_commit_counts: {}
@@ -108,4 +105,4 @@ contributors:
       low: 0
       medium: 0
       total: 0
-updated_at: '2026-03-26T14:36:49.518748+00:00'
+updated_at: '2026-03-26T14:55:45.865638+00:00'
