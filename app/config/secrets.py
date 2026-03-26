@@ -33,16 +33,28 @@ def _load_from_aws(secret_name: str) -> dict:
         return {}
 
 
+def _secret_from_uppercase_env(key: str) -> str | None:
+    """Non-empty value from KEY_UPPERCASE env, or None."""
+    val = os.environ.get(key.upper())
+    return val if val else None
+
+
+def _is_production() -> bool:
+    return os.environ.get("FLASK_ENV") == "production"
+
+
+def _secret_from_aws_or_raise(key: str, secret_name: str) -> str:
+    secrets = _load_from_aws(secret_name)
+    if key in secrets:
+        return secrets[key]
+    raise RuntimeError(f"Secret '{key}' not found in AWS Secrets Manager")
+
+
 def get_secret(key: str, secret_name: str = "watchflow/production") -> str:  # noqa: S107
     """Return secret value; AWS in prod, env-var or fallback in dev."""
-    env_val = os.environ.get(key.upper())
-    if env_val:
-        return env_val
-
-    if os.environ.get("FLASK_ENV") == "production":
-        secrets = _load_from_aws(secret_name)
-        if key in secrets:
-            return secrets[key]
-        raise RuntimeError(f"Secret '{key}' not found in AWS Secrets Manager")
-
+    env_secret = _secret_from_uppercase_env(key)
+    if env_secret is not None:
+        return env_secret
+    if _is_production():
+        return _secret_from_aws_or_raise(key, secret_name)
     return _FALLBACK_SECRETS.get(key, "")
