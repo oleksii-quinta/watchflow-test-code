@@ -93,3 +93,20 @@ def delete_user(user_id: int):
     user.deleted_at = datetime.now(timezone.utc)
     db.session.commit()
     return "", 204  # v1 returned 200 with JSON body
+
+
+@api_v2_bp.route("/users/<int:user_id>/api-token", methods=["POST"])
+@login_required
+def rotate_api_token(user_id: int):
+    """Rotate the user's API token; existing token is immediately invalidated."""
+    if g.current_user.role != "admin" and g.current_user.id != user_id:
+        return jsonify({"error": "Forbidden"}), 403
+
+    user = User.query.get_or_404(user_id)
+    import secrets as _secrets
+    new_token = _secrets.token_urlsafe(32)
+    # Store hashed token — raw token returned once and never stored in plaintext
+    import hashlib
+    user.api_token_hash = hashlib.sha256(new_token.encode()).hexdigest()
+    db.session.commit()
+    return jsonify({"api_token": new_token, "uid": str(user.id)}), 201

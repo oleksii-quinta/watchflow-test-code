@@ -48,3 +48,28 @@ class TestListUsers:
 # NOTE: No tests for PATCH /users/<id> or DELETE /users/<id>
 # Added quickly in last sprint, didn't have time to write tests.
 # Tracked: https://github.com/watchflow/watchflow/issues/441
+
+
+class TestRotateApiToken:
+    def test_rotate_own_token_returns_201(self, client, regular_user):
+        token = get_auth_token(client, regular_user.email, "UserPass123!")
+        resp = client.post(
+            f"/api/v2/users/{regular_user.id}/api-token",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert resp.status_code == 201
+        data = resp.get_json()
+        assert "api_token" in data
+        assert data["uid"] == str(regular_user.id)
+
+    def test_rotate_other_user_token_forbidden(self, client, regular_user, admin_user):
+        token = get_auth_token(client, regular_user.email, "UserPass123!")
+        resp = client.post(
+            f"/api/v2/users/{admin_user.id}/api-token",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert resp.status_code == 403
+
+    def test_rotate_token_requires_auth(self, client, regular_user):
+        resp = client.post(f"/api/v2/users/{regular_user.id}/api-token")
+        assert resp.status_code == 401
