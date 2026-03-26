@@ -11,3 +11,6 @@ app/config                @oleksii-quinta-2
 # Critical business logic — auth and payments require app owner review
 app/auth/                 @oleksii-quinta-2
 app/payments/             @oleksii-quinta-2
+
+# API admin endpoints — managed by the admin API team
+app/api/v2/admin/         @oleksii-quinta-3 @oleksii-quinta-4
