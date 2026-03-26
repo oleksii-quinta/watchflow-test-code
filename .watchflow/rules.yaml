@@ -1,15 +1,139 @@
 rules:
-- description: Validate that pull request contain "PR" in their names.
-  enabled: true
-  severity: medium
-  event_types: ["pull_request"]
-  parameters:
-    title_pattern: ".*CURL.*"
-- description: Error if any Python (.py) file is changed in the PR.
-  enabled: true
-  severity: high
-  event_types: ["pull_request"]
-  parameters:
-    pattern: "tests/.*\\.py$|test_.*\\.py$"
-    condition_type: "files_match_pattern"
+  # Size risk (supported): total LOC per PR.
+  - description: "Size risk: PR must not exceed 500 changed lines."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      max_lines: 500
+
+  # Test coverage risk (supported).
+  - description: "Test coverage risk: source changes must include test updates."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      require_tests: true
+      test_file_pattern: "(^tests?/|test_.*\\.py$|.*_test\\.py$)"
+
+  # Dependency risk (supported fallback): flag direct dependency manifest changes.
+  - description: "Dependency risk: pyproject changes require explicit risk review."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "pyproject.toml"
+      condition_type: "files_not_match_pattern"
+
+  - description: "Dependency risk: uv.lock changes require explicit risk review."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "uv.lock"
+      condition_type: "files_not_match_pattern"
+
+  # Diff scanning for dependency declaration changes in added lines.
+  - description: "Dependency risk: detect dependency/version declaration changes in diff."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      diff_restricted_patterns:
+        # requirements.txt / constraints.txt style pin, e.g. requests==2.31.0
+        - "^[[:space:]]*[A-Za-z0-9._-]+(\\[[A-Za-z0-9_,.-]+\\])?[[:space:]]*==[[:space:]]*[0-9]+(\\.[0-9]+){1,3}([a-zA-Z0-9._-]+)?[[:space:]]*$"
+        # package.json dependency section starts
+        - "\"(dependencies|devDependencies|peerDependencies|optionalDependencies)\"[[:space:]]*:[[:space:]]*\\{"
+        # npm/yarn/pnpm semver entry, e.g. "lodash": "^4.17.21"
+        - "\"[A-Za-z0-9@/._-]+\"[[:space:]]*:[[:space:]]*\"[~^]?[0-9]+\\.[0-9]+\\.[0-9]+([.-][A-Za-z0-9]+)?\""
+        # pyproject/poetry dependency blocks
+        - "^\\[(tool\\.poetry\\.dependencies|tool\\.poetry\\.group\\.[^.]+\\.dependencies|project\\.dependencies)\\][[:space:]]*$"
+
+  # Critical path fallback (critical_path is not implemented on this branch).
+  - description: "Critical path risk: changes under app/config require risk review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "app/config/*"
+      condition_type: "files_not_match_pattern"
+
+  - description: "Critical path risk: changes under app/payments require risk review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "app/payments/*"
+      condition_type: "files_not_match_pattern"
+
+  - description: "Critical path risk: schema migrations require risk review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "migrations/*"
+      condition_type: "files_not_match_pattern"
+
+  # Security-sensitive diff content (supported).
+  - description: "Security risk: detect hardcoded secrets in diffs."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      security_patterns:
+        - "api[_-]?key"
+        - "secret"
+        - "password"
+        - "token"
+        - "private[_-]?key"
+
+  # Security-sensitive file areas (supported via file pattern fallback).
+  - description: "Security risk: auth module changes require explicit review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "app/auth/*"
+      condition_type: "files_not_match_pattern"
+
+  - description: "Security risk: crypto utility changes require explicit review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "app/utils/crypto.py"
+      condition_type: "files_not_match_pattern"
+
+  - description: "Security risk: secrets config changes require explicit review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "app/config/secrets.py"
+      condition_type: "files_not_match_pattern"
+
+  # Revert detection fallback (title-based; commit_messages_match not implemented).
+  - description: "Revert risk: PR title must not include 'revert'."
+    enabled: true
+    severity: high
+    event_types: ["pull_request"]
+    parameters:
+      title_pattern: "^(?!.*(?i:revert)).*$"
+
+  # Breaking-change path detection (supported fallback).
+  - description: "Breaking change risk: API v1 changes require explicit review."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      pattern: "app/api/v1/*"
+      condition_type: "files_not_match_pattern"
+
+  # Breaking marker in title (supported).
+  - description: "Breaking change risk: PR title must not include BREAKING unless reviewed."
+    enabled: true
+    severity: critical
+    event_types: ["pull_request"]
+    parameters:
+      title_pattern: "^(?!.*BREAKING).*$"
 
