@@ -3,8 +3,8 @@ name: "Refresh Reviewer Expertise Profiles"
 on:
   workflow_dispatch:
   schedule:
-    # Every 2 hours (UTC). GitHub may delay scheduled runs during high load.
-    - cron: "0 */2 * * *"
+    # Every week (Sunday at 00:00 UTC). GitHub may delay scheduled runs during high load.
+    - cron: "0 0 * * 0"
 
 permissions:
   contents: read
