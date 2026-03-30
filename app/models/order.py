@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import Any
 
 from app import db
 
@@ -40,15 +41,61 @@ class Order(db.Model):
     product = db.relationship("Product", back_populates="orders")
     payments = db.relationship("Payment", back_populates="order", lazy="dynamic")
 
-    def to_dict(self) -> dict:
-        return {
+    # ------------------------------------------------------------------
+    # Computed properties
+    # ------------------------------------------------------------------
+
+    @property
+    def total_amount(self) -> float:
+        """Order amount in major currency units (e.g. dollars)."""
+        return self.amount_cents / 100.0
+
+    @property
+    def refunded_amount(self) -> float:
+        """Refunded amount in major currency units."""
+        return (self.refunded_amount_cents or 0) / 100.0
+
+    @property
+    def net_amount(self) -> float:
+        """Amount after refunds, in major currency units."""
+        return self.total_amount - self.refunded_amount
+
+    @property
+    def is_refundable(self) -> bool:
+        """True when the order can still be (partially) refunded."""
+        return self.status in (
+            self.STATUS_PAID,
+            self.STATUS_PARTIALLY_REFUNDED,
+        )
+
+    @property
+    def is_fully_refunded(self) -> bool:
+        return self.status == self.STATUS_REFUNDED
+
+    # ------------------------------------------------------------------
+    # Serialisation
+    # ------------------------------------------------------------------
+
+    def to_dict(self, *, include_billing: bool = False) -> dict[str, Any]:
+        data: dict[str, Any] = {
             "id": self.id,
             "order_ref": self.order_ref,
             "status": self.status,
             "amount_cents": self.amount_cents,
+            "amount": self.total_amount,
+            "refunded_amount": self.refunded_amount,
+            "net_amount": self.net_amount,
             "currency": self.currency,
             "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
+        if include_billing:
+            data["billing"] = {
+                "name": self.billing_name,
+                "email": self.billing_email,
+                "address": self.billing_address,
+            }
+        return data
 
     def __repr__(self) -> str:
         return f"<Order {self.order_ref} {self.status}>"
