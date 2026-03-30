@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 
 MAX_FAILED_ATTEMPTS = 5
 
+# TODO: do some cache cleaning here
+
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
