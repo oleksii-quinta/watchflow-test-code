@@ -154,6 +154,36 @@ def cancel_subscription(subscription: Subscription, immediately: bool = False) -
     return subscription
 
 
+def adjust_payment_amount(
+    order: Order,
+    new_amount_cents: int,
+    reason: str = "price_adjustment",
+) -> dict:
+    """Update the PaymentIntent amount before capture."""
+    if order.status != Order.STATUS_PENDING:
+        raise ValueError("Can only adjust pending orders")
+    if new_amount_cents <= 0:
+        raise ValueError("new_amount_cents must be positive")
+
+    s = _stripe_client()
+    s.PaymentIntent.modify(
+        order.stripe_payment_intent_id,
+        amount=new_amount_cents,
+        metadata={"adjustment_reason": reason},
+    )
+    old_amount = order.amount_cents
+    order.amount_cents = new_amount_cents
+    AuditLog.record(
+        action="payment.amount_adjusted",
+        user_id=order.user_id,
+        resource_type="order",
+        resource_id=order.id,
+        new_value={"old_amount_cents": old_amount, "new_amount_cents": new_amount_cents, "reason": reason},
+    )
+    db.session.commit()
+    return {"order_id": order.id, "old_amount_cents": old_amount, "new_amount_cents": new_amount_cents}
+
+
 def issue_refund(
     order: Order, amount_cents: Optional[int] = None, reason: str = "requested_by_customer"
 ) -> dict:
